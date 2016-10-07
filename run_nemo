@@ -1,0 +1,190 @@
+#!/bin/bash
+# ---------------------------
+
+export NPROC=2000
+
+#===============================================================
+# SET SCRIPT VARIABLES
+#===============================================================
+export RUNNAME=EXP_harmIT
+export YEARrun='2012'
+export EXEC=nemo.exe					# Name of the exec file
+export KHOMEDIR=/work/n01/n01/kariho40/NEMO/NEMOGCM_jdha/dev_r4621_NOC4_BDY_VERT_INTERP/NEMOGCM/CONFIG/AMM60smago		# Home Directory
+export HOMEDIR=/work/n01/n01/jelt/NEMO/NEMOGCM_jdha/dev_r4621_NOC4_BDY_VERT_INTERP/NEMOGCM/CONFIG/XIOS_AMM60_nemo_harmIT              # Home Directory
+#export DATADIR=/work/n01/n01/kariho40/NEMO/FORCINGS		# Where to get forcings
+export DATADIR=/work/n01/n01/kariho40/NEMO/FORCINGS/2010_2013		# Where to get forcings
+export GRIDDIR=/work/n01/n01/kariho40/NEMO/GRID		# Where to get forcings
+export JOBDIR=$HOMEDIR/$RUNNAME			# Config directory
+export SHAREDDIR=$HOMEDIR/../SHARED			# Config directory
+export WDIR=$JOBDIR/WDIR			# Working directory
+export OUTPUTDIR=$JOBDIR/OUTPUT		# Output directory
+export LOGDIR=$JOBDIR/LOGS			# Logs directory
+export RESTARTDIR=$JOBDIR/RESTART			# Logs directory
+export BACKDIR=/home/n01/n01/jelt/NEMO/3.6		# Backup on home
+export BACKJOBDIR=$BACKDIR/AMM60_$RUNNAME		# Backup on home
+export CODEDIR=$HOMEDIR/BLD/
+export XIOSDIR=/work/n01/n01/jdha/ST/xios-1.0/
+
+export nrestart_max=2 #31 (For one submission this number must equal the number of lines in run_counter.txt)
+export nrestart=`wc -l < $JOBDIR/run_counter.txt `
+
+if [ "$nrestart" -le "$nrestart_max" ]; then
+
+export nstart=`head -1 $JOBDIR/run_counter.txt | cut -d ' ' -f 4`
+export nn_it000=`tail -1 $JOBDIR/run_counter.txt | cut -d ' ' -f 2`
+export nitend=`tail -1 $JOBDIR/run_counter.txt | cut -d ' ' -f 3`
+
+echo  ~~~~~~~~~~~~~~~~~~~
+echo JOBDIR = $JOBDIR
+echo WDIR = $WDIR
+echo  ~~~~~~~~~~~~~~~~~~~
+
+#===============================================================
+# DO NOT CHANGE ANYTHING UNDER THIS LINE, EXCEPT FORCING PATHS
+#===============================================================
+#while true; do
+#    read -p "Do you wish to remove $WDIR? [y/n]" yn
+#    case $yn in
+#        [Yy]* ) rm -r $WDIR; break;;
+#        [Nn]* ) break;;
+#        * ) echo "Please answer yes or no.";;
+#    esac
+#done
+
+mkdir -p $WDIR
+mkdir -p $OUTPUTDIR
+mkdir -p $LOGDIR
+echo $WDIR/AMM60_run* $LOGDIR
+mv $WDIR/AMM60_run* $LOGDIR
+rm -fr $WDIR/*	#Clean running directory
+#mv $WDIR/* $LOGDIR	#Save logfiles
+echo before cd WDIR:  `pwd`
+cd $WDIR
+echo after cd WDIR:  `pwd`
+
+#===============================================================
+# BACKUP of config files
+#===============================================================
+mkdir -p $BACKJOBDIR
+echo `date`: BACKUP of config files
+cp $JOBDIR/* $BACKJOBDIR/
+
+#===============================================================
+# EXECUTABLE
+#===============================================================
+rm  $JOBDIR/$EXEC
+ln -s $CODEDIR/bin/$EXEC $JOBDIR/$EXEC
+cp $JOBDIR/$EXEC $WDIR/$EXEC
+rm  $JOBDIR/xios_server.exe
+ln -s $XIOSDIR/bin/xios_server.exe $JOBDIR/xios_server.exe
+cp $JOBDIR/xios_server.exe $WDIR
+
+#===============================================================
+# INPUT FILES
+#===============================================================
+#---------------------------------------------------------------
+# Coordinates
+#---------------------------------------------------------------
+echo `date`: Link coordinates
+ln -s $GRIDDIR/coordinates_AMM60.nc        ./coordinates.nc
+
+#---------------------------------------------------------------
+# Bathymetry
+#---------------------------------------------------------------
+echo `date`: Link Bathymetry
+ln -s $GRIDDIR/bathyfile_AMM60_nosmooth.nc ./bathy_meter.nc
+
+#---------------------------------------------------------------
+# XML files
+#---------------------------------------------------------------
+ln -sf $JOBDIR/iodef.xml  ./iodef.xml 
+ln -sf $JOBDIR/domain_def.xml  ./domain_def.xml
+ln -sf $SHAREDDIR/field_def.xml  ./field_def.xml
+
+#===============================================================
+# INPUT FILES 
+#===============================================================
+#---------------------------------------------------------------
+# BDY
+#---------------------------------------------------------------
+echo `date`: Link bdy data
+TIDEDIR=$DATADIR
+BDYDIR=/work/n01/n01/kariho40/NEMO/FORCINGS/2010_2013
+
+for fic in `ls $TIDEDIR/NNA_AMM60bdy__bdytide*nc`; do
+    ficdest=`basename $fic`
+    ln -s $fic $WDIR/$ficdest
+done
+
+for yyyy in $YEARrun; do
+  for fic in `ls $BDYDIR/AMM60bdy_NNA_R12_*${yyyy}*nc`; do
+    ficdest=`basename $fic`
+    ln -s $fic $WDIR/$ficdest
+  done
+done
+
+ln -s $BDYDIR/coordinates.bdy.nc ./coordinates.bdy.nc
+#ln -s $DATADIR/runoff_AMM60_allindex_bathynosmooth.nc ./rivers.nc
+
+#---------------------------------------------------------------
+# NAMELISTS
+#---------------------------------------------------------------
+#rm $JOBDIR/namelist_ref
+#ln -s $SHAREDDIR/namelist_ref $JOBDIR/namelist_ref
+cp $JOBDIR/namelist_ref $WDIR/namelist_ref
+
+#---------------------------------------------------------------
+# Restart file and/or initial condition and namelist
+#---------------------------------------------------------------
+if [[ $nn_it000 -eq 1 ]]; then
+    echo INIT
+    sed "\
+    13c\
+    ln_rstart   =   .false.   
+    9c\
+    nn_it000 = 1
+    10c\
+    nn_itend = "$nitend"
+    11c\
+    nn_date0 = "$nstart"
+    17c\
+    nn_stock = "$nitend"
+    18c\
+    nn_write = "$nitend" 
+    306c\
+    rn_sponge     = 30 " $JOBDIR/namelist_cfg > $WDIR/namelist_cfg
+    ln -s $DATADIR/AMM60_inits_NNAR12_20100105.nc $WDIR/inits.nc
+  else
+    sed "\
+    13c\
+    ln_rstart   =   .true.   
+    9c\
+    nn_it000 = "$nn_it000"
+    10c\
+    nn_itend = "$nitend"
+    11c\
+    nn_date0 = "$nstart"
+    17c\
+    nn_stock = "$nitend"
+    18c\
+    nn_write = "$nitend" " $JOBDIR/namelist_cfg > $WDIR/namelist_cfg
+    nit_rst1=`expr $nn_it000 - 1`
+    nit_rst=`printf "%8.8d" $nit_rst1`
+    for cnt in {0..1999}; do
+      ind=`printf "%4.4d" $cnt`
+      ln -s $RESTARTDIR/$nit_rst/restart_$ind.nc $WDIR/restart_$ind.nc
+    done
+  fi
+#===============================================================
+# LAUNCH JOB
+#===============================================================
+echo `date` Submit Run 
+echo -V  $JOBDIR/submit_nemo.pbs 
+qsub -V $JOBDIR/submit_nemo.pbs
+qstat -u jelt
+
+else #   from if statement --- if [ "$nrestart" -le "$nrestart_max" ]; then
+echo Maximum number of restarts reached. Job not started
+fi
+
+exit
