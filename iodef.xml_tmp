@@ -1,0 +1,817 @@
+<?xml version="1.0"?>
+<simulation> 
+
+ <context id="nemo" time_origin="1950-01-01 00:00:00" >
+    
+    <!-- $id$ -->
+    
+    <!-- 
+============================================================================================================
+=                                  definition of all existing variables                                    =
+=                                            DO NOT CHANGE                                                 =
+============================================================================================================
+    -->
+    <field_definition src="./field_def.xml"/>
+    <!-- 
+============================================================================================================
+=                                           output files definition                                        =
+=                                            Define your own files                                         =
+=                                         put the variables you want...                                    =
+============================================================================================================
+    -->
+    
+    <file_definition type="one_file" name="@expname@_@freq@_@startdate@_@enddate@" sync_freq="10d" min_digits="4">
+      <file_group id="1ts" output_freq="1ts"  output_level="10" enabled=".TRUE."> <!-- 1 time step files -->
+   <!--
+       <file id="file10" name_suffix="_ptrc_T" description="tracer variables" >
+          <field field_ref="AREA"     name="AREA"    long_name="cell area" operation="instant" />
+          <field field_ref="DEPTH"    name="DEPTH"   long_name="cell depth" operation="instant" />
+          <field field_ref="TR1"      name="TR1"     long_name="passive tracer density" operation="instant" />
+          <field field_ref="TR1_pool" name="TR1_pool" long_name="passive tracer pool" operation="instant" />
+          <field field_ref="XAD_TR1"  name="XAD_TR1" long_name="tracer trend advection in x direction" operation="instant" freq_op="1ts" />
+          <field field_ref="YAD_TR1"  name="YAD_TR1" long_name="tracer trend advection in y direction" operation="instant" freq_op="1ts" />
+          <field field_ref="LDF_TR1"  name="LDF_TR1" long_name="tracer trend from horizontal diffusion" operation="instant" freq_op="1ts" />
+          <field field_ref="ATF_TR1"  name="ATF_TR1" long_name="tracer trend from Asselin Tide Filter" operation="instant" freq_op="1ts" />
+          <field field_ref="RDB_TR1"  name="RDB_TR1" long_name="tracer trend from correcting negative concentrations" operation="instant" freq_op="1ts" />
+          <field field_ref="RDN_TR1"  name="RDN_TR1" long_name="tracer trend from correcting negative concentrations" operation="instant" freq_op="1ts" />
+          <field field_ref="e3t"      name="e3t"     operation="instant" />
+        </file>
+        <file id="file33" name_suffix="_grid_U" description="ocean U grid variables" >
+          <field field_ref="uoce"         name="uo"      long_name="sea_water_x_velocity" operation="instant" />
+        </file>
+        <file id="file34" name_suffix="_grid_V" description="ocean V grid variables" >
+          <field field_ref="voce"         name="vo"      long_name="sea_water_y_velocity" operation="instant" />
+        </file>
+        <file id="file22" name_suffix="_grid_T" description="ocean T grid variables" >
+          <field field_ref="e3t"  />
+          <field field_ref="toce"         name="thetao"   long_name="sea_water_potential_temperature"          operation="instant" freq_op="1d" > @toce_e3t / @e3t </field>
+          <field field_ref="soce"         name="so"       long_name="sea_water_salinity"             operation="instant" freq_op="1d" > @soce_e3t / @e3t </field>
+          <field field_ref="sst"          name="sst"      long_name="sea_surface_temperature"             />
+          <field field_ref="sss"          name="sss"      long_name="sea_surface_salinity"                />
+          <field field_ref="ssh"          name="ssh"      long_name="sea_surface_height_above_geoid"      />
+        </file>
+     -->
+      </file_group>
+
+      <file_group id="1h" output_freq="1h"  output_level="10" enabled=".TRUE."> <!-- 1d files  EDITTED TO MAKE 1H files -->
+
+        <file id="file8" name_suffix="_Tides" description="tidal harmonics" >
+          <field field_ref="e3t"  />
+          <field field_ref="gdept"/>
+          <field field_ref="M2x_ro"       name="M2x_ro"   long_name="M2 ro   real part"                       />
+          <field field_ref="M2y_ro"       name="M2y_ro"   long_name="M2 ro  imaaginary part"                  />
+<!--
+          <field field_ref="M2x_u"        name="M2x_u"    long_name="M2 current bcl-baro i-axis harmonic real "       />
+          <field field_ref="M2y_u"        name="M2y_u"    long_name="M2 current bcl-baro i-axis harmonic imaginary "  />
+          <field field_ref="M2x_v"        name="M2x_v"    long_name="M2 current bcl-baro j-axis harmonic real "       />
+          <field field_ref="M2y_v"        name="M2y_v"    long_name="M2 current bcl-baro j-axis harmonic imaginary "  />
+          <field field_ref="M2x_w"        name="M2x_w"    long_name="M2 current vertical harmonic real part "       />
+          <field field_ref="M2y_w"        name="M2y_w"    long_name="M2 current vertical imaginary part "  />
+          <field field_ref="M2x_SSH"      name="M2x_SSH"  long_name="M2 ro   real part"                       />
+          <field field_ref="M2y_SSH"      name="M2y_SSH"  long_name="M2 ro  imaaginary part"                  />
+          <field field_ref="M2x_u2d"      name="M2x_u2d"  long_name="M2 current baro i-axis harmonic real "       />
+          <field field_ref="M2y_u2d"      name="M2y_u2d"  long_name="M2 current baro i-axis harmonic imaginary "  />
+          <field field_ref="M2x_v2d"      name="M2x_v2d"  long_name="M2 current baro j-axis harmonic real "       />
+          <field field_ref="M2y_v2d"      name="M2y_v2d"  long_name="M2 current baro j-axis harmonic imaginary "  />
+          <field field_ref="M2x_dzi"      name="M2x_dzi"  long_name="M2 isopycnal elevations harmonic real part "  />
+          <field field_ref="M2y_dzi"      name="M2y_dzi"  long_name="M2 isopycnal elevations imaginary part "  />
+          <field field_ref="M2x_tabx"      name="M2x_tabx"  long_name="M2 bottom shear stress i-axis  real "       />
+          <field field_ref="M2y_tabx"      name="M2y_tabx"  long_name="M2 bottom shear stress i-axes  imaginary "  />
+          <field field_ref="M2x_taby"      name="M2x_taby"  long_name="M2 bottom shear stress j-axes  real "       />
+          <field field_ref="M2y_taby"      name="M2y_taby"  long_name="M2 bottom shear stress j-axis  imaginary "  />
+
+          <field field_ref="S2x_ro"       name="S2x_ro"   long_name="S2 ro   real part"                       />
+          <field field_ref="S2y_ro"       name="S2y_ro"   long_name="S2 ro  imaaginary part"                  />
+          <field field_ref="S2x_u"        name="S2x_u"    long_name="S2 current bcl-baro i-axis harmonic real "       />
+          <field field_ref="S2y_u"        name="S2y_u"    long_name="S2 current bcl-baro i-axis harmonic imaginary "  />
+          <field field_ref="S2x_v"        name="S2x_v"    long_name="S2 current bcl-baro j-axis harmonic real "       />
+          <field field_ref="S2y_v"        name="S2y_v"    long_name="S2 current bcl-baro j-axis harmonic imaginary "  />
+          <field field_ref="S2x_w"        name="S2x_w"    long_name="S2 current vertical harmonic real part "       />
+          <field field_ref="S2y_w"        name="S2y_w"    long_name="S2 current vertical imaginary part "  />
+          <field field_ref="S2x_SSH"      name="S2x_SSH"  long_name="S2 ro   real part"                       />
+          <field field_ref="S2y_SSH"      name="S2y_SSH"  long_name="S2 ro  imaaginary part"                  />
+          <field field_ref="S2x_u2d"      name="S2x_u2d"  long_name="S2 current baro i-axis harmonic real "       />
+          <field field_ref="S2y_u2d"      name="S2y_u2d"  long_name="S2 current baro i-axis harmonic imaginary "  />
+          <field field_ref="S2x_v2d"      name="S2x_v2d"  long_name="S2 current baro j-axis harmonic real "       />
+          <field field_ref="S2y_v2d"      name="S2y_v2d"  long_name="S2 current baro j-axis harmonic imaginary "  />
+          <field field_ref="S2x_dzi"      name="S2x_dzi"  long_name="S2 isopycnal elevations harmonic real part "  />
+          <field field_ref="S2y_dzi"      name="S2y_dzi"  long_name="S2 isopycnal elevations imaginary part "  />
+          <field field_ref="S2x_tabx"      name="S2x_tabx"  long_name="S2 bottom shear stress i-axis  real "       />
+          <field field_ref="S2y_tabx"      name="S2y_tabx"  long_name="S2 bottom shear stress i-axes  imaginary "  />
+          <field field_ref="S2x_taby"      name="S2x_taby"  long_name="S2 bottom shear stress j-axes  real "       />
+          <field field_ref="S2y_taby"      name="S2y_taby"  long_name="S2 bottom shear stress j-axis  imaginary "  />
+
+          <field field_ref="N2x_ro"       name="N2x_ro"   long_name="N2 ro   real part"                       />
+          <field field_ref="N2y_ro"       name="N2y_ro"   long_name="N2 ro  imaaginary part"                  />
+          <field field_ref="N2x_u"        name="N2x_u"    long_name="N2 current bcl-baro i-axis harmonic real "       />
+          <field field_ref="N2y_u"        name="N2y_u"    long_name="N2 current bcl-baro i-axis harmonic imaginary "  />
+          <field field_ref="N2x_v"        name="N2x_v"    long_name="N2 current bcl-baro j-axis harmonic real "       />
+          <field field_ref="N2y_v"        name="N2y_v"    long_name="N2 current bcl-baro j-axis harmonic imaginary "  />
+          <field field_ref="N2x_w"        name="N2x_w"    long_name="N2 current vertical harmonic real part "       />
+          <field field_ref="N2y_w"        name="N2y_w"    long_name="N2 current vertical imaginary part "  />
+          <field field_ref="N2x_SSH"      name="N2x_SSH"  long_name="N2 ro   real part"                       />
+          <field field_ref="N2y_SSH"      name="N2y_SSH"  long_name="N2 ro  imaaginary part"                  />
+          <field field_ref="N2x_u2d"      name="N2x_u2d"  long_name="N2 current baro i-axis harmonic real "       />
+          <field field_ref="N2y_u2d"      name="N2y_u2d"  long_name="N2 current baro i-axis harmonic imaginary "  />
+          <field field_ref="N2x_v2d"      name="N2x_v2d"  long_name="N2 current baro j-axis harmonic real "       />
+          <field field_ref="N2y_v2d"      name="N2y_v2d"  long_name="N2 current baro j-axis harmonic imaginary "  />
+          <field field_ref="N2x_dzi"      name="N2x_dzi"  long_name="N2 isopycnal elevations harmonic real part "  />
+          <field field_ref="N2y_dzi"      name="N2y_dzi"  long_name="N2 isopycnal elevations imaginary part "  />
+          <field field_ref="N2x_tabx"      name="N2x_tabx"  long_name="N2 bottom shear stress i-axis  real "       />
+          <field field_ref="N2y_tabx"      name="N2y_tabx"  long_name="N2 bottom shear stress i-axes  imaginary "  />
+          <field field_ref="N2x_taby"      name="N2x_taby"  long_name="N2 bottom shear stress j-axes  real "       />
+          <field field_ref="N2y_taby"      name="N2y_taby"  long_name="M2 bottom shear stress j-axis  imaginary "  />
+
+          <field field_ref="K2x_ro"       name="K2x_ro"   long_name="K2 ro   real part"                       />
+          <field field_ref="K2y_ro"       name="K2y_ro"   long_name="K2 ro  imaaginary part"                  />
+          <field field_ref="K2x_u"        name="K2x_u"    long_name="K2 current bcl-baro i-axis harmonic real "       />
+          <field field_ref="K2y_u"        name="K2y_u"    long_name="K2 current bcl-baro i-axis harmonic imaginary "  />
+          <field field_ref="K2x_v"        name="K2x_v"    long_name="K2 current bcl-baro j-axis harmonic real "       />
+          <field field_ref="K2y_v"        name="K2y_v"    long_name="K2 current bcl-baro j-axis harmonic imaginary "  />
+          <field field_ref="K2x_w"        name="K2x_w"    long_name="K2 current vertical harmonic real part "       />
+          <field field_ref="K2y_w"        name="K2y_w"    long_name="K2 current vertical imaginary part "  />
+          <field field_ref="K2x_SSH"      name="K2x_SSH"  long_name="K2 ro   real part"                       />
+          <field field_ref="K2y_SSH"      name="K2y_SSH"  long_name="K2 ro  imaaginary part"                  />
+          <field field_ref="K2x_u2d"      name="K2x_u2d"  long_name="K2 current baro i-axis harmonic real "       />
+          <field field_ref="K2y_u2d"      name="K2y_u2d"  long_name="K2 current baro i-axis harmonic imaginary "  />
+          <field field_ref="K2x_v2d"      name="K2x_v2d"  long_name="K2 current baro j-axis harmonic real "       />
+          <field field_ref="K2y_v2d"      name="K2y_v2d"  long_name="K2 current baro j-axis harmonic imaginary "  />
+          <field field_ref="K2x_dzi"      name="K2x_dzi"  long_name="K2 isopycnal elevations harmonic real part "  />
+          <field field_ref="K2y_dzi"      name="K2y_dzi"  long_name="K2 isopycnal elevations imaginary part "  />
+          <field field_ref="K2x_tabx"      name="K2x_tabx"  long_name="K2 bottom shear stress i-axis  real "       />
+          <field field_ref="K2y_tabx"      name="K2y_tabx"  long_name="K2 bottom shear stress i-axes  imaginary "  />
+          <field field_ref="K2x_taby"      name="K2x_taby"  long_name="K2 bottom shear stress j-axes  real "       />
+          <field field_ref="K2y_taby"      name="K2y_taby"  long_name="M2 bottom shear stress j-axis  imaginary "  />
+
+          <field field_ref="K1x_ro"       name="K1x_ro"   long_name="K1 ro   real part"                       />
+          <field field_ref="K1y_ro"       name="K1y_ro"   long_name="K1 ro  imaaginary part"                  />
+          <field field_ref="K1x_u"        name="K1x_u"    long_name="K1 current bcl-baro i-axis harmonic real "       />
+          <field field_ref="K1y_u"        name="K1y_u"    long_name="K1 current bcl-baro i-axis harmonic imaginary "  />
+          <field field_ref="K1x_v"        name="K1x_v"    long_name="K1 current bcl-baro j-axis harmonic real "       />
+          <field field_ref="K1y_v"        name="K1y_v"    long_name="K1 current bcl-baro j-axis harmonic imaginary "  />
+          <field field_ref="K1x_w"        name="K1x_w"    long_name="K1 current vertical harmonic real part "       />
+          <field field_ref="K1y_w"        name="K1y_w"    long_name="K1 current vertical imaginary part "  />
+          <field field_ref="K1x_SSH"      name="K1x_SSH"  long_name="K1 ro   real part"                       />
+          <field field_ref="K1y_SSH"      name="K1y_SSH"  long_name="K1 ro  imaaginary part"                  />
+          <field field_ref="K1x_u2d"      name="K1x_u2d"  long_name="K1 current baro i-axis harmonic real "       />
+          <field field_ref="K1y_u2d"      name="K1y_u2d"  long_name="K1 current baro i-axis harmonic imaginary "  />
+          <field field_ref="K1x_v2d"      name="K1x_v2d"  long_name="K1 current baro j-axis harmonic real "       />
+          <field field_ref="K1y_v2d"      name="K1y_v2d"  long_name="K1 current baro j-axis harmonic imaginary "  />
+          <field field_ref="K1x_dzi"      name="K1x_dzi"  long_name="K1 isopycnal elevations harmonic real part "  />
+          <field field_ref="K1y_dzi"      name="K1y_dzi"  long_name="K1 isopycnal elevations imaginary part "  />
+          <field field_ref="K1x_tabx"      name="K1x_tabx"  long_name="K1 bottom shear stress i-axis  real "       />
+          <field field_ref="K1y_tabx"      name="K1y_tabx"  long_name="K1 bottom shear stress i-axes  imaginary "  />
+          <field field_ref="K1x_taby"      name="K1x_taby"  long_name="K1 bottom shear stress j-axes  real "       />
+          <field field_ref="K1y_taby"      name="K1y_taby"  long_name="K1 bottom shear stress j-axis  imaginary "  />
+
+          <field field_ref="O1x_ro"       name="O1x_ro"   long_name="O1 ro   real part"                       />
+          <field field_ref="O1y_ro"       name="O1y_ro"   long_name="O1 ro  imaaginary part"                  />
+          <field field_ref="O1x_u"        name="O1x_u"    long_name="O1 current bcl-baro i-axis harmonic real "       />
+          <field field_ref="O1y_u"        name="O1y_u"    long_name="O1 current bcl-baro i-axis harmonic imaginary "  />
+          <field field_ref="O1x_v"        name="O1x_v"    long_name="O1 current bcl-baro j-axis harmonic real "       />
+          <field field_ref="O1y_v"        name="O1y_v"    long_name="O1 current bcl-baro j-axis harmonic imaginary "  />
+          <field field_ref="O1x_w"        name="O1x_w"    long_name="O1 current vertical harmonic real part "       />
+          <field field_ref="O1y_w"        name="O1y_w"    long_name="O1 current vertical imaginary part "  />
+          <field field_ref="O1x_SSH"      name="O1x_SSH"  long_name="O1 ro   real part"                       />
+          <field field_ref="O1y_SSH"      name="O1y_SSH"  long_name="O1 ro  imaaginary part"                  />
+          <field field_ref="O1x_u2d"      name="O1x_u2d"  long_name="O1 current baro i-axis harmonic real "       />
+          <field field_ref="O1y_u2d"      name="O1y_u2d"  long_name="O1 current baro i-axis harmonic imaginary "  />
+          <field field_ref="O1x_v2d"      name="O1x_v2d"  long_name="O1 current baro j-axis harmonic real "       />
+          <field field_ref="O1y_v2d"      name="O1y_v2d"  long_name="O1 current baro j-axis harmonic imaginary "  />
+          <field field_ref="O1x_dzi"      name="O1x_dzi"  long_name="O1 isopycnal elevations harmonic real part "  />
+          <field field_ref="O1y_dzi"      name="O1y_dzi"  long_name="O1 isopycnal elevations imaginary part "  />
+          <field field_ref="O1x_tabx"      name="O1x_tabx"  long_name="O1 bottom shear stress i-axis  real "       />
+          <field field_ref="O1y_tabx"      name="O1y_tabx"  long_name="O1 bottom shear stress i-axes  imaginary "  />
+          <field field_ref="O1x_taby"      name="O1x_taby"  long_name="O1 bottom shear stress j-axes  real "       />
+          <field field_ref="O1y_taby"      name="O1y_taby"  long_name="O1 bottom shear stress j-axis  imaginary "  />
+
+          <field field_ref="Q1x_ro"       name="Q1x_ro"   long_name="Q1 ro   real part"                       />
+          <field field_ref="Q1y_ro"       name="Q1y_ro"   long_name="Q1 ro  imaaginary part"                  />
+          <field field_ref="Q1x_u"        name="Q1x_u"    long_name="Q1 current bcl-baro i-axis harmonic real "       />
+          <field field_ref="Q1y_u"        name="Q1y_u"    long_name="Q1 current bcl-baro i-axis harmonic imaginary "  />
+          <field field_ref="Q1x_v"        name="Q1x_v"    long_name="Q1 current bcl-baro j-axis harmonic real "       />
+          <field field_ref="Q1y_v"        name="Q1y_v"    long_name="Q1 current bcl-baro j-axis harmonic imaginary "  />
+          <field field_ref="Q1x_w"        name="Q1x_w"    long_name="Q1 current vertical harmonic real part "       />
+          <field field_ref="Q1y_w"        name="Q1y_w"    long_name="Q1 current vertical imaginary part "  />
+          <field field_ref="Q1x_SSH"      name="Q1x_SSH"  long_name="Q1 ro   real part"                       />
+          <field field_ref="Q1y_SSH"      name="Q1y_SSH"  long_name="Q1 ro  imaaginary part"                  />
+          <field field_ref="Q1x_u2d"      name="Q1x_u2d"  long_name="Q1 current baro i-axis harmonic real "       />
+          <field field_ref="Q1y_u2d"      name="Q1y_u2d"  long_name="Q1 current baro i-axis harmonic imaginary "  />
+          <field field_ref="Q1x_v2d"      name="Q1x_v2d"  long_name="Q1 current baro j-axis harmonic real "       />
+          <field field_ref="Q1y_v2d"      name="Q1y_v2d"  long_name="Q1 current baro j-axis harmonic imaginary "  />
+          <field field_ref="Q1x_dzi"      name="Q1x_dzi"  long_name="Q1 isopycnal elevations harmonic real part "  />
+          <field field_ref="Q1y_dzi"      name="Q1y_dzi"  long_name="Q1 isopycnal elevations imaginary part "  />
+          <field field_ref="Q1x_tabx"      name="Q1x_tabx"  long_name="Q1 bottom shear stress i-axis  real "       />
+          <field field_ref="Q1y_tabx"      name="Q1y_tabx"  long_name="Q1 bottom shear stress i-axes  imaginary "  />
+          <field field_ref="Q1x_taby"      name="Q1x_taby"  long_name="Q1 bottom shear stress j-axes  real "       />
+          <field field_ref="Q1y_taby"      name="Q1y_taby"  long_name="Q1 bottom shear stress j-axis  imaginary "  />
+
+          <field field_ref="M4x_ro"       name="M4x_ro"   long_name="M4 ro   real part"                       />
+          <field field_ref="M4y_ro"       name="M4y_ro"   long_name="M4 ro  imaaginary part"                  />
+          <field field_ref="M4x_u"        name="M4x_u"    long_name="M4 current bcl-baro i-axis harmonic real "       />
+          <field field_ref="M4y_u"        name="M4y_u"    long_name="M4 current bcl-baro i-axis harmonic imaginary "  />
+          <field field_ref="M4x_v"        name="M4x_v"    long_name="M4 current bcl-baro j-axis harmonic real "       />
+          <field field_ref="M4y_v"        name="M4y_v"    long_name="M4 current bcl-baro j-axis harmonic imaginary "  />
+          <field field_ref="M4x_w"        name="M4x_w"    long_name="M4 current vertical harmonic real part "       />
+          <field field_ref="M4y_w"        name="M4y_w"    long_name="M4 current vertical imaginary part "  />
+          <field field_ref="M4x_SSH"      name="M4x_SSH"  long_name="M4 ro   real part"                       />
+          <field field_ref="M4y_SSH"      name="M4y_SSH"  long_name="M4 ro  imaaginary part"                  />
+          <field field_ref="M4x_u2d"      name="M4x_u2d"  long_name="M4 current baro i-axis harmonic real "       />
+          <field field_ref="M4y_u2d"      name="M4y_u2d"  long_name="M4 current baro i-axis harmonic imaginary "  />
+          <field field_ref="M4x_v2d"      name="M4x_v2d"  long_name="M4 current baro j-axis harmonic real "       />
+          <field field_ref="M4y_v2d"      name="M4y_v2d"  long_name="M4 current baro j-axis harmonic imaginary "  />
+          <field field_ref="M4x_dzi"      name="M4x_dzi"  long_name="M4 isopycnal elevations harmonic real part "  />
+          <field field_ref="M4y_dzi"      name="M4y_dzi"  long_name="M4 isopycnal elevations imaginary part "  />
+          <field field_ref="M4x_tabx"      name="M4x_tabx"  long_name="M4 bottom shear stress i-axis  real "       />
+          <field field_ref="M4y_tabx"      name="M4y_tabx"  long_name="M4 bottom shear stress i-axes  imaginary "  />
+          <field field_ref="M4x_taby"      name="M4x_taby"  long_name="M4 bottom shear stress j-axes  real "       />
+          <field field_ref="M4y_taby"      name="M4y_taby"  long_name="M4 bottom shear stress j-axis  imaginary "  />
+
+          <field field_ref="P1x_ro"       name="P1x_ro"   long_name="P1 ro   real part"                       />
+          <field field_ref="P1y_ro"       name="P1y_ro"   long_name="P1 ro  imaaginary part"                  />
+          <field field_ref="P1x_u"        name="P1x_u"    long_name="P1 current bcl-baro i-axis harmonic real "       />
+          <field field_ref="P1y_u"        name="P1y_u"    long_name="P1 current bcl-baro i-axis harmonic imaginary "  />
+          <field field_ref="P1x_v"        name="P1x_v"    long_name="P1 current bcl-baro j-axis harmonic real "       />
+          <field field_ref="P1y_v"        name="P1y_v"    long_name="P1 current bcl-baro j-axis harmonic imaginary "  />
+          <field field_ref="P1x_w"        name="P1x_w"    long_name="P1 current vertical harmonic real part "       />
+          <field field_ref="P1y_w"        name="P1y_w"    long_name="P1 current vertical imaginary part "  />
+          <field field_ref="P1x_SSH"      name="P1x_SSH"  long_name="P1 ro   real part"                       />
+          <field field_ref="P1y_SSH"      name="P1y_SSH"  long_name="P1 ro  imaaginary part"                  />
+          <field field_ref="P1x_u2d"      name="P1x_u2d"  long_name="P1 current baro i-axis harmonic real "       />
+          <field field_ref="P1y_u2d"      name="P1y_u2d"  long_name="P1 current baro i-axis harmonic imaginary "  />
+          <field field_ref="P1x_v2d"      name="P1x_v2d"  long_name="P1 current baro j-axis harmonic real "       />
+          <field field_ref="P1y_v2d"      name="P1y_v2d"  long_name="P1 current baro j-axis harmonic imaginary "  />
+          <field field_ref="P1x_dzi"      name="P1x_dzi"  long_name="P1 isopycnal elevations harmonic real part "  />
+          <field field_ref="P1y_dzi"      name="P1y_dzi"  long_name="P1 isopycnal elevations imaginary part "  />
+          <field field_ref="P1x_tabx"      name="P1x_tabx"  long_name="P1 bottom shear stress i-axis  real "       />
+          <field field_ref="P1y_tabx"      name="P1y_tabx"  long_name="P1 bottom shear stress i-axes  imaginary "  />
+          <field field_ref="P1x_taby"      name="P1x_taby"  long_name="P1 bottom shear stress j-axes  real "       />
+          <field field_ref="P1y_taby"      name="P1y_taby"  long_name="P1 bottom shear stress j-axis  imaginary "  />
+-->
+
+        </file>
+
+
+
+
+<!--
+        <file id="file8" name_suffix="_Tides" description="tidal harmonics" >
+          <field field_ref="M2x"          name="M2x"      long_name="M2 Elevation harmonic real part"                       />
+          <field field_ref="M2y"          name="M2y"      long_name="M2 Elevation harmonic imaginary part"                  />
+          <field field_ref="M2x_u"        name="M2x_u"    long_name="M2 current barotropic along i-axis harmonic real part "       />
+          <field field_ref="M2y_u"        name="M2y_u"    long_name="M2 current barotropic along i-axis harmonic imaginary part "  />
+          <field field_ref="M2x_v"        name="M2x_v"    long_name="M2 current barotropic along j-axis harmonic real part "       />
+          <field field_ref="M2y_v"        name="M2y_v"    long_name="M2 current barotropic along j-axis harmonic imaginary part "  />
+          <field field_ref="S2x"          name="S2x"      long_name="S2 Elevation harmonic real part"                       />
+          <field field_ref="S2y"          name="S2y"      long_name="S2 Elevation harmonic imaginary part"                  />
+          <field field_ref="S2x_u"        name="S2x_u"    long_name="S2 current barotropic along i-axis harmonic real part "       />
+          <field field_ref="S2y_u"        name="S2y_u"    long_name="S2 current barotropic along i-axis harmonic imaginary part "  />
+          <field field_ref="S2x_v"        name="S2x_v"    long_name="S2 current barotropic along j-axis harmonic real part "       />
+          <field field_ref="S2y_v"        name="S2y_v"    long_name="S2 current barotropic along j-axis harmonic imaginary part "  />
+          <field field_ref="K2x"          name="K2x"      long_name="K2 Elevation harmonic real part"                       />
+          <field field_ref="K2y"          name="K2y"      long_name="K2 Elevation harmonic imaginary part"                  />
+          <field field_ref="K2x_u"        name="K2x_u"    long_name="K2 current barotropic along i-axis harmonic real part "       />
+          <field field_ref="K2y_u"        name="K2y_u"    long_name="K2 current barotropic along i-axis harmonic imaginary part "  />
+          <field field_ref="K2x_v"        name="K2x_v"    long_name="K2 current barotropic along j-axis harmonic real part "       />
+          <field field_ref="K2y_v"        name="K2y_v"    long_name="K2 current barotropic along j-axis harmonic imaginary part "  />
+          <field field_ref="N2x"          name="N2x"      long_name="N2 Elevation harmonic real part"                       />
+          <field field_ref="N2y"          name="N2y"      long_name="N2 Elevation harmonic imaginary part"                  />
+          <field field_ref="N2x_u"        name="N2x_u"    long_name="N2 current barotropic along i-axis harmonic real part "       />
+          <field field_ref="N2y_u"        name="N2y_u"    long_name="N2 current barotropic along i-axis harmonic imaginary part "  />
+          <field field_ref="N2x_v"        name="N2x_v"    long_name="N2 current barotropic along j-axis harmonic real part "       />
+          <field field_ref="N2y_v"        name="N2y_v"    long_name="N2 current barotropic along j-axis harmonic imaginary part "  />
+          <field field_ref="K1x"          name="K1x"      long_name="K1 Elevation harmonic real part"                       />
+          <field field_ref="K1y"          name="K1y"      long_name="K1 Elevation harmonic imaginary part"                  />
+          <field field_ref="K1x_u"        name="K1x_u"    long_name="K1 current barotropic along i-axis harmonic real part "       />
+          <field field_ref="K1y_u"        name="K1y_u"    long_name="K1 current barotropic along i-axis harmonic imaginary part "  />
+          <field field_ref="K1x_v"        name="K1x_v"    long_name="K1 current barotropic along j-axis harmonic real part "       />
+          <field field_ref="K1y_v"        name="K1y_v"    long_name="K1 current barotropic along j-axis harmonic imaginary part "  />
+          <field field_ref="P1x"          name="P1x"      long_name="P1 Elevation harmonic real part"                       />
+          <field field_ref="P1y"          name="P1y"      long_name="P1 Elevation harmonic imaginary part"                  />
+          <field field_ref="P1x_u"        name="P1x_u"    long_name="P1 current barotropic along i-axis harmonic real part "       />
+          <field field_ref="P1y_u"        name="P1y_u"    long_name="P1 current barotropic along i-axis harmonic imaginary part "  />
+          <field field_ref="P1x_v"        name="P1x_v"    long_name="P1 current barotropic along j-axis harmonic real part "       />
+          <field field_ref="P1y_v"        name="P1y_v"    long_name="P1 current barotropic along j-axis harmonic imaginary part "  />
+          <field field_ref="O1x"          name="O1x"      long_name="O1 Elevation harmonic real part"                       />
+          <field field_ref="O1y"          name="O1y"      long_name="O1 Elevation harmonic imaginary part"                  />
+          <field field_ref="O1x_u"        name="O1x_u"    long_name="O1 current barotropic along i-axis harmonic real part "       />
+          <field field_ref="O1y_u"        name="O1y_u"    long_name="O1 current barotropic along i-axis harmonic imaginary part "  />
+          <field field_ref="O1x_v"        name="O1x_v"    long_name="O1 current barotropic along j-axis harmonic real part "       />
+          <field field_ref="O1y_v"        name="O1y_v"    long_name="O1 current barotropic along j-axis harmonic imaginary part "  />
+-->
+        </file>
+
+       <!-- 
+        <file id="file31" name_suffix="_grid_T" description="ocean T grid variables" >
+          <field field_ref="ssh"          name="zos"      long_name="sea_surface_height_above_geoid"      />
+        </file>
+       -->
+      </file_group>
+
+      <file_group id="2h" output_freq="2h"  output_level="10" enabled=".TRUE."/> <!-- 2h files -->
+      <file_group id="3h" output_freq="3h"  output_level="10" enabled=".TRUE."/> <!-- 3h files -->     
+      <file_group id="4h" output_freq="4h"  output_level="10" enabled=".TRUE."/> <!-- 4h files -->
+      <file_group id="6h" output_freq="6h"  output_level="10" enabled=".TRUE."/> <!-- 6h files -->     
+<!--  
+    <file_group id="1h" output_freq="1h"  output_level="10" enabled=".TRUE."> <!-- 1h files -->
+-->
+    <!-- <file id="file51" name_suffix="_NorthSea"  description="T grid variables">
+         <field_group id="NorthSea" domain_ref="NorthSea">
+          <field field_ref="ssh"          name="zos"      long_name="sea_surface_height_above_geoid"      />
+          <field field_ref="avm"          name="avm"    long_name="vertical viscosity coefficient" />
+          <field field_ref="uoce"        name="uo"      long_name="sea_water_x_velocity" />
+          <field field_ref="voce"        name="vo"      long_name="sea_water_y_velocity" />
+          <field field_ref="woce"        name="wo"      long_name="ocean vertical velocity" />
+         </field_group>
+        </file> -->
+
+<!--
+<!-- Shelf Break virtual moorings -->
+        <file id="file001" name_suffix="_SB001_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB001_grid_T" domain_ref="SB001" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file002" name_suffix="_SB002_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB002_grid_T" domain_ref="SB002" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file003" name_suffix="_SB003_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB003_grid_T" domain_ref="SB003" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file004" name_suffix="_SB004_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB004_grid_T" domain_ref="SB004" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file005" name_suffix="_SB005_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB005_grid_T" domain_ref="SB005" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file006" name_suffix="_SB006_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB006_grid_T" domain_ref="SB006" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file007" name_suffix="_SB007_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB007_grid_T" domain_ref="SB007" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file008" name_suffix="_SB008_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB008_grid_T" domain_ref="SB008" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file009" name_suffix="_SB009_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB009_grid_T" domain_ref="SB009" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file010" name_suffix="_SB010_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB010_grid_T" domain_ref="SB010" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file011" name_suffix="_SB011_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB011_grid_T" domain_ref="SB011" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file012" name_suffix="_SB012_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB012_grid_T" domain_ref="SB012" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file013" name_suffix="_SB013_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB013_grid_T" domain_ref="SB013" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file014" name_suffix="_SB014_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB014_grid_T" domain_ref="SB014" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file015" name_suffix="_SB015_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB015_grid_T" domain_ref="SB015" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file016" name_suffix="_SB016_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB016_grid_T" domain_ref="SB016" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file017" name_suffix="_SB017_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB017_grid_T" domain_ref="SB017" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file018" name_suffix="_SB018_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB018_grid_T" domain_ref="SB018" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file019" name_suffix="_SB019_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB019_grid_T" domain_ref="SB019" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file020" name_suffix="_SB020_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB020_grid_T" domain_ref="SB020" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file021" name_suffix="_SB021_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB021_grid_T" domain_ref="SB021" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file022" name_suffix="_SB022_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB022_grid_T" domain_ref="SB022" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file023" name_suffix="_SB023_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB023_grid_T" domain_ref="SB023" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file024" name_suffix="_SB024_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB024_grid_T" domain_ref="SB024" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file025" name_suffix="_SB025_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB025_grid_T" domain_ref="SB025" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file026" name_suffix="_SB026_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB026_grid_T" domain_ref="SB026" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file027" name_suffix="_SB027_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB027_grid_T" domain_ref="SB027" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file028" name_suffix="_SB028_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB028_grid_T" domain_ref="SB028" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file029" name_suffix="_SB029_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB029_grid_T" domain_ref="SB029" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file030" name_suffix="_SB030_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB030_grid_T" domain_ref="SB030" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file031" name_suffix="_SB031_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB031_grid_T" domain_ref="SB031" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+        <file id="file032" name_suffix="_SB032_grid_T" description="ocean T grid variables">
+          <field_group id="1h_SB032_grid_T" domain_ref="SB032" >
+            <field field_ref="toce"       name="thetao"   long_name="sea water potential temperature" />
+            <field field_ref="soce"       name="so"       long_name="sea water salinity"              />
+            <field field_ref="tpt_dep"      name="depth"   />
+            <field field_ref="uoce"       name="vozocrtx" long_name="sea water x velocity" />
+            <field field_ref="voce"       name="vomecrty" long_name="sea water y velocity" />
+            <field field_ref="woce"       name="vovecrtz" long_name="sea water w velocity" />
+            <field field_ref="utau"       name="utau"  long_name="surface downward x stress" />
+            <field field_ref="vtau"       name="vtau"  long_name="surface downward y stress" />
+            <field field_ref="ssh"          name="ssh"      long_name="sea surface height"/>
+          </field_group>
+        </file>
+-->
+<!--
+      </file_group>
+-->
+
+
+      <file_group id="3d" output_freq="3d"  output_level="10" enabled=".TRUE."/> <!-- 3d files -->    
+
+      <file_group id="5d" output_freq="5d"  output_level="10" enabled=".TRUE."/>  <!-- 5d files -->  
+      <file_group id="1m" output_freq="1mo" output_level="10" enabled=".TRUE."/> <!-- real monthly files -->
+
+      <file_group id="2m" output_freq="2mo" output_level="10" enabled=".TRUE."/> <!-- real 2m files -->
+      <file_group id="3m" output_freq="3mo" output_level="10" enabled=".TRUE."/> <!-- real 3m files -->
+      <file_group id="4m" output_freq="4mo" output_level="10" enabled=".TRUE."/> <!-- real 4m files -->
+      <file_group id="6m" output_freq="6mo" output_level="10" enabled=".TRUE."/> <!-- real 6m files -->
+
+      <file_group id="1y"  output_freq="1y" output_level="10" enabled=".TRUE."/> <!-- real yearly files -->
+      <file_group id="2y"  output_freq="2y" output_level="10" enabled=".TRUE."/> <!-- real 2y files -->
+      <file_group id="5y"  output_freq="5y" output_level="10" enabled=".TRUE."/> <!-- real 5y files -->
+      <file_group id="10y" output_freq="10y" output_level="10" enabled=".TRUE."/> <!-- real 10y files -->
+
+   </file_definition>
+    
+    <!-- 
+============================================================================================================
+= grid definition = = DO NOT CHANGE =
+============================================================================================================
+    -->
+    
+   <axis_definition>  
+      <axis id="deptht" long_name="Vertical T levels" unit="m" positive="down" />
+      <axis id="depthu" long_name="Vertical U levels" unit="m" positive="down" />
+      <axis id="depthv" long_name="Vertical V levels" unit="m" positive="down" />
+      <axis id="depthw" long_name="Vertical W levels" unit="m" positive="down" />
+      <axis id="nfloat" long_name="Float number"      unit="-"  />
+      <axis id="icbcla" long_name="Iceberg class"     unit="-"  />
+   </axis_definition> 
+    
+   <domain_definition src="./domain_def.xml"/>
+   
+   <grid_definition>    
+     <grid id="grid_T_2D" domain_ref="grid_T"/>
+     <grid id="grid_T_3D" domain_ref="grid_T" axis_ref="deptht"/>
+     <grid id="grid_U_2D" domain_ref="grid_U"/>
+     <grid id="grid_U_3D" domain_ref="grid_U" axis_ref="depthu"/>
+     <grid id="grid_V_2D" domain_ref="grid_V"/>
+     <grid id="grid_V_3D" domain_ref="grid_V" axis_ref="depthv"/>
+     <grid id="grid_W_2D" domain_ref="grid_W"/>
+     <grid id="grid_W_3D" domain_ref="grid_W" axis_ref="depthw"/>
+   </grid_definition>   
+  </context>
+  
+
+  <context id="xios">
+
+      <variable_definition>
+	
+     <!-- 
+        We must have buffer_size > jpi*jpj*jpk*8 (with jpi and jpj the subdomain size)
+-->
+	  <variable id="buffer_size"               type="integer">50000000</variable>
+	  <variable id="buffer_server_factor_size" type="integer">2</variable>
+	  <variable id="info_level"                type="integer">0</variable>
+	  <variable id="using_server"              type="boolean">false</variable>
+	  <variable id="using_oasis"               type="boolean">false</variable>
+	  <variable id="oasis_codes_id"            type="string" >oceanx</variable>
+	
+      </variable_definition>
+               
+  </context>
+  
+</simulation>
