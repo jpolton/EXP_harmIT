@@ -29,7 +29,6 @@
           <field field_ref="gdept"/>
           <field field_ref="M2x_ro"       name="M2x_ro"   long_name="M2 ro   real part"                       />
           <field field_ref="M2y_ro"       name="M2y_ro"   long_name="M2 ro  imaaginary part"                  />
-<!--
           <field field_ref="M2x_u"        name="M2x_u"    long_name="M2 current bcl-baro i-axis harmonic real "       />
           <field field_ref="M2y_u"        name="M2y_u"    long_name="M2 current bcl-baro i-axis harmonic imaginary "  />
           <field field_ref="M2x_v"        name="M2x_v"    long_name="M2 current bcl-baro j-axis harmonic real "       />
@@ -216,7 +215,6 @@
           <field field_ref="P1y_tabx"      name="P1y_tabx"  long_name="P1 bottom shear stress i-axes  imaginary "  />
           <field field_ref="P1x_taby"      name="P1x_taby"  long_name="P1 bottom shear stress j-axes  real "       />
           <field field_ref="P1y_taby"      name="P1y_taby"  long_name="P1 bottom shear stress j-axis  imaginary "  />
--->
 
         </file>
 

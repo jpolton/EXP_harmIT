@@ -5,7 +5,7 @@
 #===============================================================
 #PBS -N AMM60_harmIT
 #PBS -l select=92
-#PBS -l walltime=00:05:00
+#PBS -l walltime=00:20:00
 #PBS -A n01-Shelf
 #PBS -j oe
 #PBS -r n
