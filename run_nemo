@@ -167,7 +167,11 @@ if [[ $nn_it000 -eq 1 ]]; then
     17c\
     nn_stock = "$nitend"
     18c\
-    nn_write = "$nitend" " $JOBDIR/namelist_cfg > $WDIR/namelist_cfg
+    nn_write = "$nitend"
+    273c\
+    nit000_han = "$nn_it000"
+    274c\
+    nitend_han = "$nitend" " $JOBDIR/namelist_cfg > $WDIR/namelist_cfg
     nit_rst1=`expr $nn_it000 - 1`
     nit_rst=`printf "%8.8d" $nit_rst1`
     for cnt in {0..1999}; do

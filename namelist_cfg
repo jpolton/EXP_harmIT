@@ -270,8 +270,8 @@ nn_write = 1440
 !-----------------------------------------------------------------------
 &nam_diaharm   !   Harmonic analysis of tidal constituents ('key_diaharm')
 !-----------------------------------------------------------------------
-   nit000_han = 1         ! First time step used for harmonic analysis
-   nitend_han = 75        ! Last time step used for harmonic analysis
+   nit000_han = 1264321         ! First time step used for harmonic analysis
+   nitend_han = 1271520        ! Last time step used for harmonic analysis
    nstep_han  = 15        ! Time step frequency for harmonic analysis
    tname(1)     =   'Q1'   !  name of constituent
    tname(2)     =   'O1'
